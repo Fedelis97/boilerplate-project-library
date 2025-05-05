@@ -17,9 +17,7 @@ module.exports = function (app) {
       try {
         const result = await myController.getBooks()
         if (result.length > 0) { res.json(result) }
-        else {
-          res.send('no book exists');
-        }
+       
       } catch (e) {
         console.error(e);
 
