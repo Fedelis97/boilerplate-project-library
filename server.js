@@ -8,6 +8,9 @@ require('dotenv').config();
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
+const myDB = require('./connections');
+const MyController = require("./controllers/controller");
+
 
 const app = express();
 
@@ -29,6 +32,21 @@ fccTestingRoutes(app);
 
 //Routing for API 
 apiRoutes(app);  
+
+//Routing for API 
+myDB(async (client) => {
+  try {
+    const db = client.db('database');
+    app.locals.myController = new MyController(db);
+
+  } catch (e) {
+    console.error("Database connection error:", e);
+    app.get('/', (req, res) => {
+      res.render('index', { title: 'Error', message: 'Unable to connect to database' });
+    });
+  }
+});
+    
     
 //404 Not Found Middleware
 app.use(function(req, res, next) {
